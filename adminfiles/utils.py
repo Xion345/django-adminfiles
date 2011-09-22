@@ -73,25 +73,28 @@ def render_upload(upload, template_path="adminfiles/render/", **options):
                      "default"]
     tpl = template.loader.select_template(
         ["%s.html" % join(template_path, p) for p in templates])
-    if upload.is_image():
-        if settings.ADMINFILES_MAX_WIDTH is not None:
-            max_width = int(settings.ADMINFILES_MAX_WIDTH)
-        else:
-            max_width = int(upload.width())
-        if settings.ADMINFILES_MAX_HEIGHT is not None:
-            max_height = int(settings.ADMINFILES_MAX_HEIGHT)
-        else:
-            max_height = int(upload.height())
-        needs_resize = False
-        print upload.width(), max_width
-        print upload.width() > max_width
-        if upload.width() > max_width or upload.height() > max_height:
-            needs_resize = True
-        if needs_resize:
-            options['size_spec'] = '%dx%d' % (max_width, max_height)
-        options['max_width'] = settings.ADMINFILES_MAX_WIDTH
-        options['max_height'] = settings.ADMINFILES_MAX_HEIGHT
-        options['needs_resize'] = needs_resize
-    print options
+
+    if settings.ADMINFILES_MAX_WIDTH is not None:
+        max_width = int(settings.ADMINFILES_MAX_WIDTH)
+    elif upload.width() is not None:
+        max_width = int(upload.width())
+    else:
+        max_width = 500
+
+    if settings.ADMINFILES_MAX_HEIGHT is not None:
+        max_height = int(settings.ADMINFILES_MAX_HEIGHT)
+    elif upload.height() is not None:
+        max_height = int(upload.height())
+    else:
+        max_height = 800
+
+    needs_resize = False
+    if upload.width() > max_width or upload.height() > max_height:
+        needs_resize = True
+
+    options['size_spec'] = '%dx%d' % (max_width, max_height)
+    options['max_width'] = settings.ADMINFILES_MAX_WIDTH
+    options['max_height'] = settings.ADMINFILES_MAX_HEIGHT
+    options['needs_resize'] = needs_resize
     return tpl.render(template.Context({'upload': upload,
                                         'options': options}))
