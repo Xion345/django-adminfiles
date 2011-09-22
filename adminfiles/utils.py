@@ -37,7 +37,7 @@ def render_uploads(content, template_path="adminfiles/render/"):
 
     If ``djangoembed`` or ``django-oembed`` is installed, also replaces OEmbed
     URLs with the appropriate embed markup.
-    
+
     """
     def _replace(match):
         upload, options = parse_match(match)
@@ -50,7 +50,7 @@ def render_upload(upload, template_path="adminfiles/render/", **options):
     Render a single ``FileUpload`` model instance using the
     appropriate rendering template and the given keyword options, and
     return the rendered HTML.
-    
+
     The template used to render each upload is selected based on the
     mime-type of the upload. For an upload with mime-type
     "image/jpeg", assuming the default ``template_path`` of
@@ -58,7 +58,7 @@ def render_upload(upload, template_path="adminfiles/render/", **options):
     found of the following: ``adminfiles/render/image/jpeg.html``,
     ``adminfiles/render/image/default.html``, and
     ``adminfiles/render/default.html``
-    
+
     """
     if upload is None:
         return settings.ADMINFILES_STRING_IF_NOT_FOUND
@@ -73,5 +73,25 @@ def render_upload(upload, template_path="adminfiles/render/", **options):
                      "default"]
     tpl = template.loader.select_template(
         ["%s.html" % join(template_path, p) for p in templates])
+    if upload.is_image():
+        if settings.ADMINFILES_MAX_WIDTH is not None:
+            max_width = int(settings.ADMINFILES_MAX_WIDTH)
+        else:
+            max_width = int(upload.width())
+        if settings.ADMINFILES_MAX_HEIGHT is not None:
+            max_height = int(settings.ADMINFILES_MAX_HEIGHT)
+        else:
+            max_height = int(upload.height())
+        needs_resize = False
+        print upload.width(), max_width
+        print upload.width() > max_width
+        if upload.width() > max_width or upload.height() > max_height:
+            needs_resize = True
+        if needs_resize:
+            options['size_spec'] = '%dx%d' % (max_width, max_height)
+        options['max_width'] = settings.ADMINFILES_MAX_WIDTH
+        options['max_height'] = settings.ADMINFILES_MAX_HEIGHT
+        options['needs_resize'] = needs_resize
+    print options
     return tpl.render(template.Context({'upload': upload,
                                         'options': options}))

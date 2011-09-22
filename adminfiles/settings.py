@@ -48,3 +48,6 @@ ADMINFILES_BROWSER_VIEWS = getattr(settings, 'ADMINFILES_BROWSER_VIEWS',
                                     'adminfiles.views.FlickrView',
                                     'adminfiles.views.YouTubeView',
                                     'adminfiles.views.VimeoView'])
+
+ADMINFILES_MAX_WIDTH = getattr(settings, 'ADMINFILES_MAX_WIDTH', None)
+ADMINFILES_MAX_HEIGHT = getattr(settings, 'ADMINFILES_MAX_HEIGHT', None)

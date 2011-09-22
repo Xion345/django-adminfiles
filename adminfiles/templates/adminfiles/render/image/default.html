@@ -1,3 +1,8 @@
 {% spaceless %}
+{% load thumbnail %}
+{% if options.needs_resize %}
+<a href="/{{ upload.upload.url }}" ><img src="/{% thumbnail upload.upload options.size_spec %}" class="{{ options.class }}" alt="{% if options.alt %}{{ options.alt }}{% else %}{{ upload.title }}{% endif %}"/></a>
+{% else %}
 <img src="/{{ upload.upload.url }}" width="{{ upload.width }}" height="{{ upload.height }}" class="{{ options.class }}" alt="{% if options.alt %}{{ options.alt }}{% else %}{{ upload.title }}{% endif %}" />
+{% endif %}
 {% endspaceless %}
