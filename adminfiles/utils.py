@@ -96,5 +96,6 @@ def render_upload(upload, template_path="adminfiles/render/", **options):
     options['max_width'] = settings.ADMINFILES_MAX_WIDTH
     options['max_height'] = settings.ADMINFILES_MAX_HEIGHT
     options['needs_resize'] = needs_resize
+    options['thumb_pdf'] = settings.ADMINFILES_THUMB_PDF
     return tpl.render(template.Context({'upload': upload,
                                         'options': options}))

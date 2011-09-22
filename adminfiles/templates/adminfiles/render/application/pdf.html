@@ -1,0 +1,10 @@
+{% load thumbnail %}
+{% if options.thumb_pdf %}
+<a href="/{{ upload.upload.url }}" class="{{ options.class }}">
+<img src="/{% thumbnail upload.upload options.size_spec %}" class="{{ options.class }}" alt="{% if options.alt %}{{ options.alt }}{% else %}{{ upload.title }}{% endif %}"/>
+</a>
+{% else %}
+<a href="{{ upload.upload.url }}" class="{{ options.class }}">
+{% if options.title %}{{ options.title }}{% else %}{{ upload.title }}{% endif %}
+</a>
+{% endif %}
